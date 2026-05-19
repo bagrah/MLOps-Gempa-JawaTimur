@@ -8,3 +8,4 @@ mlflow
 requests
 flask
 pytest
+dvc
