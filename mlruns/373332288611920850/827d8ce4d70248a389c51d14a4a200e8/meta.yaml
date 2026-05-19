@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850/827d8ce4d70248a389c51d14a4a200e8/artifacts
+end_time: 1779183228714
+entry_point_name: ''
+experiment_id: '373332288611920850'
+lifecycle_stage: active
+run_id: 827d8ce4d70248a389c51d14a4a200e8
+run_name: gaudy-pug-884
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779183224697
+status: 3
+tags: []
+user_id: codespace

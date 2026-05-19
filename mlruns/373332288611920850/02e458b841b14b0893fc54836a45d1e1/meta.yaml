@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850/02e458b841b14b0893fc54836a45d1e1/artifacts
+end_time: 1779183239148
+entry_point_name: ''
+experiment_id: '373332288611920850'
+lifecycle_stage: active
+run_id: 02e458b841b14b0893fc54836a45d1e1
+run_name: resilient-robin-394
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779183235593
+status: 3
+tags: []
+user_id: codespace

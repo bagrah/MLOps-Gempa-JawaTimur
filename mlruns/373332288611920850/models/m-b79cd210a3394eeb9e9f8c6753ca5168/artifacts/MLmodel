@@ -1,0 +1,23 @@
+artifact_path: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850/models/m-b79cd210a3394eeb9e9f8c6753ca5168/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.1
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.12.0
+model_id: m-b79cd210a3394eeb9e9f8c6753ca5168
+model_size_bytes: 2026312
+model_uuid: m-b79cd210a3394eeb9e9f8c6753ca5168
+prompts: null
+run_id: 02e458b841b14b0893fc54836a45d1e1
+utc_time_created: '2026-05-19 09:33:56.045603'

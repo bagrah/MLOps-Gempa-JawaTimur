@@ -1,0 +1,8 @@
+artifact_location: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850
+creation_time: 1779183222946
+experiment_id: '373332288611920850'
+last_update_time: 1779183222946
+lifecycle_stage: active
+name: gempa-jatim-experiment
+trace_location: null
+workspace: default

@@ -1,0 +1,10 @@
+artifact_location: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850/models/m-b79cd210a3394eeb9e9f8c6753ca5168/artifacts
+creation_timestamp: 1779183236015
+experiment_id: '373332288611920850'
+last_updated_timestamp: 1779183239146
+model_id: m-b79cd210a3394eeb9e9f8c6753ca5168
+model_type: null
+name: model
+source_run_id: 02e458b841b14b0893fc54836a45d1e1
+status: 2
+status_message: null

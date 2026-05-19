@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850/d447251689924429afc4ac692f08fddd/artifacts
+end_time: 1779183232404
+entry_point_name: ''
+experiment_id: '373332288611920850'
+lifecycle_stage: active
+run_id: d447251689924429afc4ac692f08fddd
+run_name: sincere-fox-1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779183228723
+status: 3
+tags: []
+user_id: codespace

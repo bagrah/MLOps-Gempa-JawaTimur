@@ -1,0 +1,14 @@
+artifact_uri: file:///workspaces/MLOps-Gempa-JawaTimur/mlruns/373332288611920850/085023a98a604056aa73add9fcf0651b/artifacts
+end_time: 1779183235585
+entry_point_name: ''
+experiment_id: '373332288611920850'
+lifecycle_stage: active
+run_id: 085023a98a604056aa73add9fcf0651b
+run_name: upset-fowl-191
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779183232412
+status: 3
+tags: []
+user_id: codespace
