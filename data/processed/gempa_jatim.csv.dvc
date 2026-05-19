@@ -1,0 +1,5 @@
+outs:
+- md5: e218a3939731b15a9e50ffed4e6c518d
+  size: 37610
+  hash: md5
+  path: gempa_jatim.csv

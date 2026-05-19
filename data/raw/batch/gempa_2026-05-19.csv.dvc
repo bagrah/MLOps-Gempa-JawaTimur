@@ -1,0 +1,5 @@
+outs:
+- md5: f60e82c3d1ce0b77fcb6c1d6cce6f7d5
+  size: 191
+  hash: md5
+  path: gempa_2026-05-19.csv
