@@ -27,7 +27,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest mlflow
+          pip install pytest mlflow scikit-learn
 
       - name: Ingest data from BMKG
         run: python -m src.data.ingest_data
@@ -36,7 +36,9 @@ jobs:
         run: python -m src.data.preprocess
 
       - name: Run Tests
-        run: pytest
+        run: pytest tests/ -v
 
       - name: Run Training
-        run: python -m src.models.train
+        run: python scripts/run_pipeline.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
