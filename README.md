@@ -406,5 +406,5 @@ mlflow:
 
 ## 👤 Author
 
-**Bagus Raharjo**
+**Muhammad Bagas Anugrah**
 Mata Kuliah: Machine Learning Operations
