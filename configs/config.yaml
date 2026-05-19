@@ -1,0 +1,34 @@
+project:
+  name: MLOps-Gempa-JawaTimur
+  domain: Seismologi
+  task: Klasifikasi (Gempa Dirasakan / Tidak Dirasakan)
+
+data:
+  source: BMKG Open Data API
+  endpoints:
+    - https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json
+    - https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json
+    - https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json
+  filter:
+    region: Jawa Timur
+    lat_min: -9.0
+    lat_max: -6.5
+    lon_min: 110.0
+    lon_max: 116.0
+  raw_path: data/raw/batch/
+  processed_path: data/processed/gempa_jatim.csv
+
+model:
+  name: RandomForestClassifier
+  features:
+    - magnitude
+    - kedalaman_km
+    - lintang
+    - bujur
+    - jam
+  target: dirasakan
+  threshold_accuracy: 0.60
+
+mlflow:
+  experiment_name: gempa-jatim-experiment
+  tracking_uri: file:./mlruns

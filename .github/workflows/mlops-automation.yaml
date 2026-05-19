@@ -1,0 +1,42 @@
+name: MLOps Gempa Automation Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 1 * * *'  # Setiap hari jam 08.00 WIB (01.00 UTC)
+
+jobs:
+  mlops-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest mlflow
+
+      - name: Ingest data from BMKG
+        run: python -m src.data.ingest_data
+
+      - name: Preprocess data
+        run: python -m src.data.preprocess
+
+      - name: Run Tests
+        run: pytest
+
+      - name: Run Training
+        run: python -m src.models.train
