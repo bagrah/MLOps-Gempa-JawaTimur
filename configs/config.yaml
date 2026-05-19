@@ -31,4 +31,4 @@ model:
 
 mlflow:
   experiment_name: gempa-jatim-experiment
-  tracking_uri: file:./mlruns
+  tracking_uri: sqlite:///mlflow.db

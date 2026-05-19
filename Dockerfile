@@ -5,8 +5,8 @@ WORKDIR /app
 COPY . /app
 
 RUN pip install --upgrade pip
-RUN pip install flask mlflow pandas scikit-learn
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["python", "-m", "src.inference.predict"]

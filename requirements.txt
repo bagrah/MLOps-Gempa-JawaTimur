@@ -4,3 +4,7 @@ scikit-learn
 matplotlib
 seaborn
 jupyter
+mlflow
+requests
+flask
+pytest
