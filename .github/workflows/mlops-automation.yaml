@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 1 * * *'  # Setiap hari jam 08.00 WIB (01.00 UTC)
+    - cron: '0 1 * * *'
 
 jobs:
   mlops-pipeline:
@@ -31,14 +31,25 @@ jobs:
 
       - name: Ingest data from BMKG
         run: python -m src.data.ingest_data
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Preprocess data
         run: python -m src.data.preprocess
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Run Training (before tests)
+        run: python -m src.models.train
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Run Tests
         run: pytest tests/ -v
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
-      - name: Run Training
-        run: python scripts/run_pipeline.py
+      - name: Evaluate Model
+        run: python -m src.models.evaluate_model
         env:
           PYTHONPATH: ${{ github.workspace }}
