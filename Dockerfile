@@ -9,4 +9,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-CMD ["python", "-m", "src.inference.predict"]
+CMD ["python", "app.py"]
