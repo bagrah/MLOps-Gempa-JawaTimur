@@ -5,7 +5,7 @@ from sklearn.metrics import (
     f1_score, confusion_matrix, classification_report
 )
 
-mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
 TARGET = "dirasakan"

@@ -6,8 +6,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
+import os
 
-mlflow.set_tracking_uri("file:./mlruns")
+os.makedirs("mlruns", exist_ok=True)
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("gempa-jatim-experiment")
 
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
@@ -19,7 +21,6 @@ def load_data():
 
 def train(n_estimators=100):
     df = load_data()
-
     X = df[FEATURES]
     y = df[TARGET]
 
@@ -30,7 +31,6 @@ def train(n_estimators=100):
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # Handle imbalanced class
     classes = np.unique(y_train)
     weights = compute_class_weight("balanced", classes=classes, y=y_train)
     class_weight = dict(zip(classes, weights))

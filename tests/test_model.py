@@ -1,7 +1,7 @@
 import mlflow
 import pandas as pd
 
-mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
 
