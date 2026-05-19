@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   mlflow-server:
     image: python:3.10-slim
@@ -16,13 +15,10 @@ services:
 
   api-service:
     build: .
-    container_name: api-service
     volumes:
       - ./:/app
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mlflow-server
+    deploy:
+      replicas: 3
     networks:
       - mlops-network
 
