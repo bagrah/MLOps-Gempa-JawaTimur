@@ -45,6 +45,8 @@ def train(n_estimators=100):
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
+        mlflow.sklearn.log_model(model, "model")
+
         acc  = accuracy_score(y_test, y_pred)
         prec = precision_score(y_test, y_pred, zero_division=0)
         rec  = recall_score(y_test, y_pred, zero_division=0)
