@@ -8,8 +8,10 @@ from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 import os
 
+# Gunakan environment variable jika ada, fallback ke sqlite lokal
+TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
 os.makedirs("mlruns", exist_ok=True)
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_tracking_uri(TRACKING_URI)
 mlflow.set_experiment("gempa-jatim-experiment")
 
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
@@ -55,7 +57,14 @@ def train(n_estimators=100):
         mlflow.log_metric("precision", prec)
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("f1_score", f1)
-        mlflow.sklearn.log_model(model, "model")
+
+        # Simpan model sebagai artifact file biasa, bukan mlflow.sklearn.log_model
+        import pickle
+        os.makedirs("models", exist_ok=True)
+        model_path = f"models/rf_n{n_estimators}.pkl"
+        with open(model_path, "wb") as f:
+            pickle.dump(model, f)
+        mlflow.log_artifact(model_path)
 
         print(f"\nn_estimators={n_estimators}")
         print(f"  Accuracy : {acc:.4f}")

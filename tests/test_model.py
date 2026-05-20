@@ -1,7 +1,11 @@
-import mlflow
 import pandas as pd
+import mlflow
+import pickle
+import glob
+import os
 
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
+TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
+mlflow.set_tracking_uri(TRACKING_URI)
 
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
 
@@ -10,11 +14,10 @@ def test_mlflow_runs_exist():
     assert len(df_runs) > 0
 
 def test_model_predict():
-    df_runs = mlflow.search_runs(
-        experiment_names=["gempa-jatim-experiment"],
-        order_by=["metrics.f1_score DESC"]
-    )
-    model = mlflow.sklearn.load_model(f"runs:/{df_runs.iloc[0]['run_id']}/model")
+    model_files = glob.glob("models/rf_n*.pkl")
+    assert len(model_files) > 0
+    with open(max(model_files, key=os.path.getmtime), "rb") as f:
+        model = pickle.load(f)
     input_data = pd.DataFrame([{
         "magnitude": 4.5, "kedalaman_km": 15,
         "lintang": -7.98, "bujur": 112.63, "jam": 14
