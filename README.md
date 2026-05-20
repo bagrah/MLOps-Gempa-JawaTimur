@@ -42,6 +42,14 @@ Proyek ini membangun sistem Machine Learning berbasis **MLOps production-ready**
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
+│                   DATA VERSIONING (DVC)                         │
+│  • dvc add data/raw/batch/                                      │
+│  • Track perubahan data setiap batch baru                       │
+│  • Hash-based versioning tanpa membebani Git                    │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
 │                     PREPROCESSING                               │
 │  src/data/preprocess.py                                         │
 │  • Merge semua batch CSV                                        │
@@ -57,25 +65,25 @@ Proyek ini membangun sistem Machine Learning berbasis **MLOps production-ready**
 │  • Random Forest Classifier                                     │
 │  • Stratified train/test split (80/20)                          │
 │  • Handle imbalanced class (class_weight=balanced)              │
-│  • Log params & metrics ke MLflow                               │
+│  • Log params & metrics ke MLflow (SQLite)                      │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                     EVALUATION & REGISTRY                       │
-│  src/models/evaluate_model.py                                   │
-│  • Ambil best run dari MLflow berdasarkan F1 Score              │
-│  • Classification report & confusion matrix                     │
-│  • Threshold F1 >= 0.40                                         │
+│                  MODEL REGISTRY (MLflow)                        │
+│  scripts/register_model.py                                      │
+│  • Register model ke MLflow Model Registry                      │
+│  • Transisi stage: None → Staging → Production                  │
+│  • Model aktif: GempaJawaTimur-RandomForest v1                  │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                     INFERENCE                                   │
-│  src/inference/predict.py                                       │
-│  • Load best model dari MLflow                                  │
-│  • Prediksi: DIRASAKAN / TIDAK DIRASAKAN                        │
-│  • Output confidence score (%)                                  │
+│                 INFERENCE & SERVING (Docker)                    │
+│  app.py + docker-compose.yaml                                   │
+│  • Flask REST API (port 5000)                                   │
+│  • MLflow UI (port 5001)                                        │
+│  • 3 replicas api-service untuk horizontal scaling              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -90,14 +98,18 @@ MLOps-Gempa-JawaTimur/
 │   └── workflows/
 │       └── mlops-automation.yaml     # CI/CD pipeline otomatis
 │
+├── .dvc/                             # Konfigurasi DVC
+│   └── config
+│
 ├── configs/
 │   └── config.yaml                   # Konfigurasi project
 │
 ├── data/
 │   ├── raw/
 │   │   └── batch/
-│   │       ├── gempa_seed_2023.csv   # Data historis awal (500 records)
-│   │       └── gempa_YYYY-MM-DD.csv  # Data harian dari BMKG
+│   │       ├── gempa_seed_2023.csv      # Data historis awal (500 records)
+│   │       ├── gempa_seed_2023.csv.dvc  # DVC tracking file
+│   │       └── gempa_YYYY-MM-DD.csv     # Data harian dari BMKG
 │   └── processed/
 │       └── gempa_jatim.csv           # Data gabungan siap training
 │
@@ -106,7 +118,8 @@ MLOps-Gempa-JawaTimur/
 │
 ├── scripts/
 │   ├── run_pipeline.py               # Jalankan full pipeline
-│   └── generate_seed_data.py         # Generate seed data historis
+│   ├── generate_seed_data.py         # Generate seed data historis
+│   └── register_model.py            # Register model ke MLflow Registry
 │
 ├── src/
 │   ├── data/
@@ -121,13 +134,15 @@ MLOps-Gempa-JawaTimur/
 │       └── predict.py                # Inference / prediksi
 │
 ├── tests/
-│   ├── test_basic.py                 # Test data pipeline
-│   └── test_model.py                 # Test model & MLflow
+│   ├── test_basic.py                 # Test data pipeline (4 tests)
+│   └── test_model.py                 # Test model & MLflow (3 tests)
 │
+├── app.py                            # Flask REST API server
 ├── Dockerfile                        # Container image
-├── docker-compose.yaml               # Orkestrasi services
+├── docker-compose.yaml               # Orkestrasi services + scaling
 ├── requirements.txt                  # Python dependencies
 ├── mlflow.db                         # MLflow SQLite tracking
+├── .dvcignore                        # DVC ignore rules
 └── README.md
 ```
 
@@ -157,7 +172,6 @@ python scripts/generate_seed_data.py
 ### 4. Jalankan Full Pipeline
 
 ```bash
-# Jalankan semua tahap sekaligus
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 python scripts/run_pipeline.py
 ```
@@ -177,7 +191,10 @@ python -m src.models.train
 # Step 4: Evaluasi
 python -m src.models.evaluate_model
 
-# Step 5: Prediksi
+# Step 5: Register model ke Registry
+python scripts/register_model.py
+
+# Step 6: Prediksi
 python -m src.inference.predict
 ```
 
@@ -236,7 +253,7 @@ Bujur   : 110.0 s/d 116.0 (BT)
 - `stratify = y` pada train/test split
 - Eksperimen dengan `n_estimators`: 50, 100, 200, 300
 
-### Hasil Eksperimen (Data Saat Ini)
+### Hasil Eksperimen
 
 | n_estimators | Accuracy | Precision | Recall | F1 Score |
 |---|---|---|---|---|
@@ -265,9 +282,61 @@ TN=397 | FP=2 | FN=6 | TP=96
 
 ---
 
-## ⚙️ Continual Learning Strategy
+## 📦 DVC Data Versioning
 
-Proyek ini dirancang untuk **Continuous Training (CT)** — model dilatih ulang secara otomatis setiap ada data baru:
+DVC digunakan untuk melacak perubahan dataset tanpa membebani Git.
+
+### Track Dataset Baru
+
+```bash
+dvc add data/raw/batch/gempa_YYYY-MM-DD.csv
+git add data/raw/batch/gempa_YYYY-MM-DD.csv.dvc
+git commit -m "data: tambah batch gempa terbaru"
+```
+
+### Cek Perubahan Data
+
+```bash
+dvc diff
+dvc status
+```
+
+### Alur Versioning
+
+```
+Batch baru masuk → dvc add → hash baru tersimpan di .dvc file
+                           → git commit .dvc file
+                           → riwayat data terlacak tanpa simpan file besar di Git
+```
+
+---
+
+## 🧪 MLflow Experiment Tracking
+
+### Jalankan MLflow UI
+
+```bash
+mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
+```
+
+Buka browser: `http://localhost:5001` — Experiment: `gempa-jatim-experiment`
+
+### Model Registry
+
+Model terbaik terdaftar sebagai:
+- **Nama:** `GempaJawaTimur-RandomForest`
+- **Versi:** v1
+- **Stage:** Production
+
+Register ulang model terbaru:
+
+```bash
+python scripts/register_model.py
+```
+
+---
+
+## ⚙️ Continual Learning Strategy
 
 ### Trigger Otomatis
 
@@ -276,37 +345,30 @@ schedule:
   - cron: '0 1 * * *'  # Setiap hari 08.00 WIB
 ```
 
-### Alur Continual Learning
+### Alur Harian
 
 ```
-Hari ke-N:
-  1. GitHub Actions trigger (cron harian)
-  2. ingest_data.py → fetch gempa baru dari BMKG
-  3. Data baru di-append ke batch CSV (tidak menimpa data lama)
-  4. preprocess.py → merge semua batch
-  5. train.py → retrain model dengan data terbaru
-  6. MLflow log run baru → bandingkan dengan run sebelumnya
-  7. Model terbaik tersedia untuk inference
+GitHub Actions trigger (cron)
+  → ingest_data.py    : fetch gempa baru dari BMKG
+  → preprocess.py     : merge & cleaning data
+  → train.py          : retrain model + log ke MLflow
+  → pytest            : validasi integritas sistem
+  → evaluate_model.py : evaluasi model terbaru
 ```
 
 ### Potensi Data Drift
 
-| Jenis Drift | Contoh Skenario |
+| Jenis Drift | Skenario |
 |---|---|
-| **Feature Drift** | Perubahan pola kedalaman gempa musiman |
-| **Label Drift** | Perubahan threshold BMKG untuk gempa "dirasakan" |
-| **Concept Drift** | Pergeseran lempeng tektonik mengubah pola seismik |
+| Feature Drift | Perubahan pola kedalaman gempa musiman |
+| Label Drift | Perubahan threshold BMKG untuk "dirasakan" |
+| Concept Drift | Pergeseran lempeng tektonik mengubah pola seismik |
 
 ---
 
 ## 🔄 GitHub Actions CI/CD
 
-Pipeline otomatis berjalan pada setiap:
-- **Push** ke branch `main`
-- **Pull Request** ke branch `main`
-- **Jadwal harian** jam 08.00 WIB
-
-### Tahapan Pipeline
+Pipeline otomatis pada setiap push, pull request, dan jadwal harian:
 
 ```
 1. Checkout repository
@@ -314,7 +376,7 @@ Pipeline otomatis berjalan pada setiap:
 3. Install dependencies
 4. Ingest data dari BMKG API
 5. Preprocessing data
-6. Training model (+ MLflow tracking)
+6. Training model + MLflow tracking
 7. Run pytest (7 test cases)
 8. Evaluate model terbaik
 ```
@@ -339,56 +401,129 @@ pytest tests/ -v
 
 ---
 
-## 🐳 Docker
+## 🐳 Docker & Scaling
 
-### Build & Run
+### Jalankan Semua Services
 
 ```bash
-# Build image
-docker build -t mlops-gempa-jatim .
+docker compose up -d
+```
 
-# Run dengan docker-compose
-docker-compose up
+### Cek Status Services
+
+```bash
+docker compose ps
+```
+
+Output yang diharapkan:
+
+```
+NAME                                  SERVICE         STATUS
+mlflow-server                         mlflow-server   Up
+mlops-gempa-jawatimur-api-service-1   api-service     Up
+mlops-gempa-jawatimur-api-service-2   api-service     Up
+mlops-gempa-jawatimur-api-service-3   api-service     Up
 ```
 
 ### Services
 
 | Service | Port | Deskripsi |
 |---|---|---|
+| `api-service` | 5000 | Flask REST API untuk inferensi |
 | `mlflow-server` | 5001 | MLflow UI untuk tracking eksperimen |
-| `api-service` | 5000 | Inference service |
+
+### Scaling Replika Dinamis
+
+Untuk mengubah jumlah replika secara dinamis tanpa restart penuh:
+
+```bash
+docker compose up -d --scale api-service=5  # Scale up ke 5 replika
+docker compose up -d --scale api-service=1  # Scale down ke 1 replika
+```
+
+Atau edit `docker-compose.yaml` bagian `deploy`:
+
+```yaml
+api-service:
+  deploy:
+    replicas: 3  # Ubah angka ini sesuai kebutuhan
+```
+
+### Matikan Semua Services
+
+```bash
+docker compose down
+```
 
 ---
 
-## 📈 MLflow Tracking
+## 🌐 API Endpoints
 
-Setelah training, buka MLflow UI:
+Base URL: `http://localhost:5000`
+
+### GET /health
 
 ```bash
-mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
+curl http://localhost:5000/health
 ```
 
-Buka browser: `http://localhost:5001`
+Response:
 
-Experiment: `gempa-jatim-experiment`
+```json
+{
+  "model": "GempaJawaTimur-RandomForest",
+  "status": "ok"
+}
+```
+
+### POST /predict
+
+```bash
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "magnitude": 4.5,
+    "kedalaman_km": 15,
+    "lintang": -7.98,
+    "bujur": 112.63,
+    "jam": 14
+  }'
+```
+
+Response:
+
+```json
+{
+  "nilai": 1,
+  "prediksi": "DIRASAKAN"
+}
+```
+
+### Parameter Input
+
+| Parameter | Tipe | Contoh | Keterangan |
+|---|---|---|---|
+| `magnitude` | float | 4.5 | Kekuatan gempa |
+| `kedalaman_km` | int | 15 | Kedalaman dalam km |
+| `lintang` | float | -7.98 | Koordinat lintang (negatif = LS) |
+| `bujur` | float | 112.63 | Koordinat bujur |
+| `jam` | int | 14 | Jam kejadian (0-23) |
 
 ---
 
 ## 🔧 Konfigurasi
 
-Edit `configs/config.yaml` untuk menyesuaikan:
+Edit `configs/config.yaml`:
 
 ```yaml
 data:
   filter:
-    lat_min: -9.0   # Ubah untuk memperluas/mempersempit wilayah
+    lat_min: -9.0
     lat_max: -6.5
     lon_min: 110.0
     lon_max: 116.0
-
 model:
-  threshold_accuracy: 0.60  # Threshold minimum accuracy
-
+  threshold_accuracy: 0.60
 mlflow:
   tracking_uri: sqlite:///mlflow.db
 ```
@@ -397,15 +532,15 @@ mlflow:
 
 ## 📚 Referensi
 
-- [BMKG Open Data](https://data.bmkg.go.id/) — Sumber data gempa bumi resmi Indonesia
-- [MLflow Documentation](https://mlflow.org/docs/latest/) — ML experiment tracking
-- [Scikit-learn RandomForest](https://scikit-learn.org/stable/modules/ensemble.html#forest) — Dokumentasi model
-- [GitHub Actions](https://docs.github.com/en/actions) — CI/CD automation
+- [BMKG Open Data](https://data.bmkg.go.id/)
+- [MLflow Documentation](https://mlflow.org/docs/latest/)
+- [DVC Documentation](https://dvc.org/doc)
+- [Scikit-learn RandomForest](https://scikit-learn.org/stable/modules/ensemble.html)
+- [GitHub Actions](https://docs.github.com/en/actions)
 
 ---
 
 ## 👤 Author
 
 **Muhammad Bagas Anugrah**
-
 Mata Kuliah: Machine Learning Operations
