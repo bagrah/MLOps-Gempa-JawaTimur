@@ -7,10 +7,9 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 import os
+import pickle
 
-# Gunakan environment variable jika ada, fallback ke sqlite lokal
 TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
-os.makedirs("mlruns", exist_ok=True)
 mlflow.set_tracking_uri(TRACKING_URI)
 mlflow.set_experiment("gempa-jatim-experiment")
 
@@ -37,7 +36,7 @@ def train(n_estimators=100):
     weights = compute_class_weight("balanced", classes=classes, y=y_train)
     class_weight = dict(zip(classes, weights))
 
-    with mlflow.start_run():
+    with mlflow.start_run() as run:
         model = RandomForestClassifier(
             n_estimators=n_estimators,
             class_weight=class_weight,
@@ -58,13 +57,11 @@ def train(n_estimators=100):
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("f1_score", f1)
 
-        # Simpan model sebagai artifact file biasa, bukan mlflow.sklearn.log_model
-        import pickle
+        # Simpan model pickle lokal saja, tanpa log artifact ke MLflow
         os.makedirs("models", exist_ok=True)
         model_path = f"models/rf_n{n_estimators}.pkl"
         with open(model_path, "wb") as f:
             pickle.dump(model, f)
-        mlflow.log_artifact(model_path)
 
         print(f"\nn_estimators={n_estimators}")
         print(f"  Accuracy : {acc:.4f}")
