@@ -9,3 +9,4 @@ requests
 flask
 pytest
 dvc
+prometheus-client 
