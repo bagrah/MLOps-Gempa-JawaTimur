@@ -10,7 +10,7 @@ mlflow.set_tracking_uri(TRACKING_URI)
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
 
 def test_mlflow_runs_exist():
-    df_runs = mlflow.search_runs(experiment_names=["gempa-jatim-experiment"])
+    df_runs = mlflow.search_runs(experiment_names=["tsunami-indonesia-experiment"])
     assert len(df_runs) > 0
 
 def test_model_predict():
@@ -26,6 +26,6 @@ def test_model_predict():
     assert pred[0] in [0, 1]
 
 def test_model_accuracy_threshold():
-    df_runs = mlflow.search_runs(experiment_names=["gempa-jatim-experiment"])
+    df_runs = mlflow.search_runs(experiment_names=["tsunami-indonesia-experiment"])
     best_acc = df_runs["metrics.accuracy"].max()
     assert best_acc >= 0.60
