@@ -55,7 +55,7 @@ def predict():
     }])
     pred = model.predict(input_df)[0]
     prob = model.predict_proba(input_df)[0]
-    label = "DIRASAKAN" if pred == 1 else "TIDAK DIRASAKAN"
+    label = "BERPOTENSI TSUNAMI" if pred == 1 else "TIDAK BERPOTENSI TSUNAMI"
 
     # Catat ke Prometheus
     latency = time.time() - start_time

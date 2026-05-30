@@ -11,13 +11,13 @@ import pickle
 
 TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
 mlflow.set_tracking_uri(TRACKING_URI)
-mlflow.set_experiment("gempa-jatim-experiment")
+mlflow.set_experiment("tsunami-indonesia-experiment")
 
 FEATURES = ["magnitude", "kedalaman_km", "lintang", "bujur", "jam"]
-TARGET = "dirasakan"
+TARGET = "potensi_tsunami"
 
 def load_data():
-    df = pd.read_csv("data/processed/gempa_jatim.csv")
+    df = pd.read_csv("data/processed/gempa_indonesia.csv")
     return df
 
 def train(n_estimators=100):
