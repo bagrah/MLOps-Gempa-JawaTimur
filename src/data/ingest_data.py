@@ -86,7 +86,7 @@ def ingest_data():
     df_all = df_all.drop_duplicates(subset=["datetime"])
 
     # Gempa yang ada di dirasakan → override label jadi 1
-    datetime_dirasakan = set(df_dirasakan["datetime"].tolist())
+    datetime_dirasakan = set(df_dirasakan["datetime"].tolist()) if not df_dirasakan.empty else set()
     df_all["dirasakan"] = df_all["datetime"].apply(
         lambda x: 1 if x in datetime_dirasakan else 0
     )
