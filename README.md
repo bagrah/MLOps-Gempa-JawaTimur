@@ -544,3 +544,36 @@ mlflow:
 
 **Muhammad Bagas Anugrah**
 Mata Kuliah: Machine Learning Operations
+---
+
+## 🔁 Continuous Training (LK-12)
+
+Sistem otomatis melakukan retraining dan evaluasi model berdasarkan dua trigger:
+
+### Trigger 1 — Performance-based
+Jika akurasi < 0.85 atau F1 < 0.60, pipeline retrain otomatis dijalankan.
+
+```bash
+python scripts/check_model_performance.py
+```
+
+### Trigger 2 — Schedule-based
+Setiap hari jam 08.00 WIB via GitHub Actions cron.
+
+### Evaluasi Komparatif Otomatis
+Model baru hanya dipromosikan ke Production jika F1 Score lebih tinggi dari model sebelumnya.
+
+```bash
+python scripts/compare_and_promote.py
+```
+
+### Simulasi Drift
+```bash
+python scripts/simulate_drift.py
+```
+
+| Kondisi | Model Lama | Model Baru |
+|---|---|---|
+| Accuracy | 0.9528 | 0.9524 |
+| F1 Score | 0.6154 | 0.8929 |
+| Status | - | ✅ Dipromosi ke Production |
