@@ -1,22 +1,17 @@
 project:
   name: MLOps-Gempa-JawaTimur
-  domain: Seismologi
-  task: Klasifikasi (Gempa Dirasakan / Tidak Dirasakan)
+  domain: Seismologi / Kebencanaan
+  task: Klasifikasi Potensi Tsunami
 
 data:
   source: BMKG Open Data API
   endpoints:
     - https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json
     - https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json
-    - https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json
   filter:
-    region: Jawa Timur
-    lat_min: -9.0
-    lat_max: -6.5
-    lon_min: 110.0
-    lon_max: 116.0
+    region: Seluruh Indonesia
   raw_path: data/raw/batch/
-  processed_path: data/processed/gempa_jatim.csv
+  processed_path: data/processed/gempa_indonesia.csv
 
 model:
   name: RandomForestClassifier
@@ -26,9 +21,10 @@ model:
     - lintang
     - bujur
     - jam
-  target: dirasakan
-  threshold_accuracy: 0.60
+  target: potensi_tsunami
+  threshold_accuracy: 0.85
+  threshold_f1: 0.60
 
 mlflow:
-  experiment_name: gempa-jatim-experiment
+  experiment_name: tsunami-indonesia-experiment
   tracking_uri: sqlite:///mlflow.db

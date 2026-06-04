@@ -1,31 +1,104 @@
 datetime,tanggal,jam,magnitude,kedalaman_km,lintang,bujur,wilayah,dirasakan,potensi_tsunami
-2026-05-28T01:46:21+00:00,28 Mei 2026,8,5.1,10,-10.55,124.49,86 km Tenggara TIMORTENGAHSEL-NTT,,0
-2026-05-26T08:39:10+00:00,26 Mei 2026,15,5.1,10,-9.01,113.84,93 km Tenggara JEMBER-JATIM,,0
-2026-05-25T22:03:43+00:00,26 Mei 2026,5,5.1,10,-3.96,133.99,45 km Tenggara KAIMANA-PAPUABRT,,0
-2026-05-25T20:39:21+00:00,26 Mei 2026,3,5.7,22,1.06,126.19,125 km Tenggara BITUNG-SULUT,,0
-2026-05-25T10:23:58+00:00,25 Mei 2026,17,5.2,136,-7.55,128.64,115 km TimurLaut MALUKUBRTDAYA,,0
-2026-05-23T12:40:26+00:00,23 Mei 2026,19,5.3,17,-4.67,102.57,45 km BaratDaya BENGKULUSELATAN,,0
-2026-05-22T01:05:09+00:00,22 Mei 2026,8,5.8,26,1.07,126.18,124 km Tenggara BITUNG-SULUT,,0
-2026-05-20T23:12:56+00:00,21 Mei 2026,6,5.0,137,-6.06,130.47,231 km BaratLaut TANIMBAR,,0
-2026-05-20T10:28:50+00:00,20 Mei 2026,17,5.2,12,-8.09,119.21,65 km TimurLaut KOTA-BIMA-NTB,,0
-2026-05-14T17:53:15+00:00,15 Mei 2026,0,6.7,163,-6.09,130.56,224 km BaratLaut TANIMBAR,,0
-2026-05-12T08:54:00+00:00,12 Mei 2026,15,5.3,89,4.64,127.35,32 km Tenggara PULAUKARATUNG-SULUT,,0
-2026-05-05T06:44:50+00:00,05 Mei 2026,13,6.0,10,-10.11,119.3,37 km BaratDaya WANOKAKA-NTT,,0
-2026-05-05T02:38:50+00:00,05 Mei 2026,9,5.3,188,-6.41,130.23,210 km BaratLaut TANIMBAR,,0
-2026-05-02T10:27:11+00:00,02 Mei 2026,17,5.6,114,-5.64,130.92,201 km BaratLaut MALUKUTENGGARA,,0
-2026-05-01T18:52:47+00:00,02 Mei 2026,1,5.1,199,-7.52,128.53,107 km TimurLaut MALUKUBRTDAYA,,0
-2026-05-29T21:46:49+00:00,30 Mei 2026,4,3.2,4,-3.56,122.28,Pusat gempa berada di darat 19 km timur Konawe Utara,,0
-2026-05-29T15:37:35+00:00,29 Mei 2026,22,2.4,14,-6.87,108.46,Pusat gempa berada di darat 12 Km utara Kuningan,,0
-2026-05-29T14:50:23+00:00,29 Mei 2026,21,3.0,4,-5.33,104.62,Pusat gempa berada di darat 18 Km barat laut Tanggamus,,0
-2026-05-29T14:34:43+00:00,29 Mei 2026,21,4.6,4,-3.56,122.3,Pusat gempa berada di darat 22 km timur Konawe Utara,,0
-2026-05-29T06:25:21+00:00,29 Mei 2026,13,3.2,4,2.56,98.64,Pusat gempa berada di darat 10 km Barat Daya Samosir,,0
-2026-05-28T23:20:01+00:00,29 Mei 2026,6,3.2,10,-8.53,116.08,Pusat gempa berada di Darat 18 km utara Lombok Barat,,0
-2026-05-28T21:43:40+00:00,29 Mei 2026,4,3.1,13,-8.49,116.07,Pusat gempa berada di darat 18 km Barat Daya Lombok Utara,,0
-2026-05-28T20:59:10+00:00,29 Mei 2026,3,4.6,30,-8.37,109.03,Pusat gempa berada di laut 71 km tenggara Cilacap,,0
-2026-05-28T20:03:25+00:00,29 Mei 2026,3,3.7,11,-8.53,116.08,Pusat gempa berada di darat 18 km utara Lombok Barat,,0
-2026-05-26T19:49:05+00:00,27 Mei 2026,2,4.4,4,4.12,97.48,Pusat gempa berada di darat 20 km timur laut Gayolues,,0
-2026-05-26T09:30:12+00:00,26 Mei 2026,16,3.0,10,-3.22,129.01,Pusat gempa berada di darat 11 km Timur Laut Maluku Tengah,,0
-2026-05-24T15:33:11+00:00,24 Mei 2026,22,4.8,22,0.98,126.15,Pusat gempa berada di laut 125 km Tenggara Bitung,,0
+2026-06-01 00:00:00,01 Jun 2026,1,6.6,11,-0.95,108.34,Simulasi Drift Data,,1
+2026-06-01 02:00:00,01 Jun 2026,3,7.4,6,-3.05,114.51,Simulasi Drift Data,,1
+2026-06-01 04:00:00,01 Jun 2026,8,7.9,21,-4.94,138.92,Simulasi Drift Data,,1
+2026-06-01 06:00:00,01 Jun 2026,9,6.0,11,3.44,131.87,Simulasi Drift Data,,1
+2026-06-01 08:00:00,01 Jun 2026,8,6.6,5,4.48,112.59,Simulasi Drift Data,,1
+2026-06-01 10:00:00,01 Jun 2026,18,6.1,26,-2.58,127.02,Simulasi Drift Data,,1
+2026-06-01 12:00:00,01 Jun 2026,4,7.7,17,-3.39,114.58,Simulasi Drift Data,,1
+2026-06-01 14:00:00,01 Jun 2026,5,7.4,6,4.6,130.84,Simulasi Drift Data,,1
+2026-06-01 16:00:00,01 Jun 2026,20,7.7,8,3.93,108.14,Simulasi Drift Data,,1
+2026-06-01 18:00:00,01 Jun 2026,1,7.8,10,3.39,114.09,Simulasi Drift Data,,1
+2026-06-01 20:00:00,01 Jun 2026,23,6.3,14,-0.04,123.51,Simulasi Drift Data,,1
+2026-06-01 22:00:00,01 Jun 2026,3,6.9,25,-1.96,102.1,Simulasi Drift Data,,1
+2026-06-02 00:00:00,02 Jun 2026,23,7.1,6,5.4,128.54,Simulasi Drift Data,,1
+2026-06-02 02:00:00,02 Jun 2026,17,7.0,28,-6.03,125.66,Simulasi Drift Data,,1
+2026-06-02 04:00:00,02 Jun 2026,1,7.4,28,-5.8,140.37,Simulasi Drift Data,,1
+2026-06-02 06:00:00,02 Jun 2026,16,7.6,22,-9.28,128.21,Simulasi Drift Data,,1
+2026-06-02 08:00:00,02 Jun 2026,6,6.5,25,-4.14,123.7,Simulasi Drift Data,,1
+2026-06-02 10:00:00,02 Jun 2026,11,6.2,29,-2.19,122.02,Simulasi Drift Data,,1
+2026-06-02 12:00:00,02 Jun 2026,20,7.2,13,-9.23,124.96,Simulasi Drift Data,,1
+2026-06-02 14:00:00,02 Jun 2026,23,6.5,18,-5.31,139.09,Simulasi Drift Data,,1
+2026-06-02 16:00:00,02 Jun 2026,2,7.7,15,-3.82,100.06,Simulasi Drift Data,,1
+2026-06-02 18:00:00,02 Jun 2026,0,6.9,17,5.82,135.85,Simulasi Drift Data,,1
+2026-06-02 20:00:00,02 Jun 2026,12,7.4,18,5.61,109.8,Simulasi Drift Data,,1
+2026-06-02 22:00:00,02 Jun 2026,8,6.7,11,-9.03,95.21,Simulasi Drift Data,,1
+2026-06-03 00:00:00,03 Jun 2026,8,6.2,17,-4.0,105.8,Simulasi Drift Data,,1
+2026-06-03 02:00:00,03 Jun 2026,20,6.6,14,2.36,119.18,Simulasi Drift Data,,1
+2026-06-03 04:00:00,03 Jun 2026,7,6.3,19,-0.56,120.46,Simulasi Drift Data,,1
+2026-06-03 06:00:00,03 Jun 2026,15,6.5,18,0.99,120.18,Simulasi Drift Data,,1
+2026-06-03 08:00:00,03 Jun 2026,15,7.1,5,3.58,122.17,Simulasi Drift Data,,1
+2026-06-03 10:00:00,03 Jun 2026,5,6.7,22,-4.95,96.48,Simulasi Drift Data,,1
+2026-06-03 12:00:00,03 Jun 2026,14,7.5,27,0.91,140.96,Simulasi Drift Data,,1
+2026-06-03 14:00:00,03 Jun 2026,4,7.3,17,-0.12,114.61,Simulasi Drift Data,,1
+2026-06-03 16:00:00,03 Jun 2026,12,7.5,21,-9.88,102.34,Simulasi Drift Data,,1
+2026-06-03 18:00:00,03 Jun 2026,17,7.6,19,0.3,105.25,Simulasi Drift Data,,1
+2026-06-03 20:00:00,03 Jun 2026,9,7.1,16,-10.13,128.2,Simulasi Drift Data,,1
+2026-06-03 22:00:00,03 Jun 2026,0,6.5,8,-7.09,110.33,Simulasi Drift Data,,1
+2026-06-04 00:00:00,04 Jun 2026,21,8.0,27,-9.12,120.89,Simulasi Drift Data,,1
+2026-06-04 02:00:00,04 Jun 2026,15,6.2,13,-7.06,138.84,Simulasi Drift Data,,1
+2026-06-04 04:00:00,04 Jun 2026,9,6.8,9,5.16,116.41,Simulasi Drift Data,,1
+2026-06-04 06:00:00,04 Jun 2026,3,6.3,17,3.63,120.78,Simulasi Drift Data,,1
+2026-06-04 08:00:00,04 Jun 2026,19,7.0,10,-6.02,109.27,Simulasi Drift Data,,1
+2026-06-04 10:00:00,04 Jun 2026,22,7.6,14,5.21,128.49,Simulasi Drift Data,,1
+2026-06-04 12:00:00,04 Jun 2026,18,6.9,10,-8.94,128.15,Simulasi Drift Data,,1
+2026-06-04 14:00:00,04 Jun 2026,5,6.9,11,-7.93,113.11,Simulasi Drift Data,,1
+2026-06-04 16:00:00,04 Jun 2026,12,6.7,23,-3.27,112.34,Simulasi Drift Data,,1
+2026-06-04 18:00:00,04 Jun 2026,0,6.2,12,-10.07,126.04,Simulasi Drift Data,,1
+2026-06-04 20:00:00,04 Jun 2026,21,7.4,26,-4.01,126.03,Simulasi Drift Data,,1
+2026-06-04 22:00:00,04 Jun 2026,1,7.5,11,-1.31,133.99,Simulasi Drift Data,,1
+2026-06-05 00:00:00,05 Jun 2026,12,7.2,26,2.24,139.61,Simulasi Drift Data,,1
+2026-06-05 02:00:00,05 Jun 2026,11,7.8,16,2.0,108.67,Simulasi Drift Data,,1
+2026-06-05 04:00:00,05 Jun 2026,18,6.3,29,5.99,110.65,Simulasi Drift Data,,1
+2026-06-05 06:00:00,05 Jun 2026,11,6.4,24,-2.01,111.67,Simulasi Drift Data,,1
+2026-06-05 08:00:00,05 Jun 2026,17,7.7,18,3.14,121.4,Simulasi Drift Data,,1
+2026-06-05 10:00:00,05 Jun 2026,9,7.3,23,1.3,108.24,Simulasi Drift Data,,1
+2026-06-05 12:00:00,05 Jun 2026,1,7.0,12,2.07,122.39,Simulasi Drift Data,,1
+2026-06-05 14:00:00,05 Jun 2026,12,7.5,15,-6.01,119.44,Simulasi Drift Data,,1
+2026-06-05 16:00:00,05 Jun 2026,13,7.6,15,-1.37,103.89,Simulasi Drift Data,,1
+2026-06-05 18:00:00,05 Jun 2026,12,7.1,17,2.74,130.73,Simulasi Drift Data,,1
+2026-06-05 20:00:00,05 Jun 2026,3,7.4,6,-1.73,130.26,Simulasi Drift Data,,1
+2026-06-05 22:00:00,05 Jun 2026,8,6.5,5,3.54,99.26,Simulasi Drift Data,,1
+2026-06-06 00:00:00,06 Jun 2026,9,7.4,27,-2.43,122.15,Simulasi Drift Data,,1
+2026-06-06 02:00:00,06 Jun 2026,18,6.8,8,-6.72,124.34,Simulasi Drift Data,,1
+2026-06-06 04:00:00,06 Jun 2026,8,7.2,8,-9.1,99.61,Simulasi Drift Data,,1
+2026-06-06 06:00:00,06 Jun 2026,11,7.2,27,-6.62,105.04,Simulasi Drift Data,,1
+2026-06-06 08:00:00,06 Jun 2026,0,7.2,6,-0.49,128.62,Simulasi Drift Data,,1
+2026-06-06 10:00:00,06 Jun 2026,23,7.4,21,-3.17,105.61,Simulasi Drift Data,,1
+2026-06-06 12:00:00,06 Jun 2026,11,6.2,7,1.59,103.78,Simulasi Drift Data,,1
+2026-06-06 14:00:00,06 Jun 2026,3,6.4,9,-4.59,99.57,Simulasi Drift Data,,1
+2026-06-06 16:00:00,06 Jun 2026,18,6.6,9,2.1,119.27,Simulasi Drift Data,,1
+2026-06-06 18:00:00,06 Jun 2026,16,7.9,18,-5.54,140.72,Simulasi Drift Data,,1
+2026-06-06 20:00:00,06 Jun 2026,6,7.3,24,5.6,117.18,Simulasi Drift Data,,1
+2026-06-06 22:00:00,06 Jun 2026,16,6.3,8,-5.92,131.57,Simulasi Drift Data,,1
+2026-06-07 00:00:00,07 Jun 2026,2,7.4,17,3.68,133.23,Simulasi Drift Data,,1
+2026-06-07 02:00:00,07 Jun 2026,10,7.7,17,-3.69,118.82,Simulasi Drift Data,,1
+2026-06-07 04:00:00,07 Jun 2026,19,7.8,28,-6.84,102.45,Simulasi Drift Data,,1
+2026-06-07 06:00:00,07 Jun 2026,18,6.4,16,5.28,101.74,Simulasi Drift Data,,1
+2026-06-07 08:00:00,07 Jun 2026,8,7.9,12,-4.34,128.68,Simulasi Drift Data,,1
+2026-06-07 10:00:00,07 Jun 2026,3,6.5,20,1.24,131.07,Simulasi Drift Data,,1
+2026-06-07 12:00:00,07 Jun 2026,13,6.3,17,-8.18,114.37,Simulasi Drift Data,,1
+2026-06-07 14:00:00,07 Jun 2026,21,7.3,11,5.39,120.0,Simulasi Drift Data,,1
+2026-06-07 16:00:00,07 Jun 2026,21,6.1,6,-8.64,116.19,Simulasi Drift Data,,1
+2026-06-07 18:00:00,07 Jun 2026,9,7.6,5,3.88,114.32,Simulasi Drift Data,,1
+2026-06-07 20:00:00,07 Jun 2026,12,6.3,10,-10.75,133.03,Simulasi Drift Data,,1
+2026-06-07 22:00:00,07 Jun 2026,4,6.2,8,-5.61,113.24,Simulasi Drift Data,,1
+2026-06-08 00:00:00,08 Jun 2026,1,7.6,9,-2.91,126.11,Simulasi Drift Data,,1
+2026-06-08 02:00:00,08 Jun 2026,13,7.9,28,1.18,97.69,Simulasi Drift Data,,1
+2026-06-08 04:00:00,08 Jun 2026,11,7.5,25,0.86,100.73,Simulasi Drift Data,,1
+2026-06-08 06:00:00,08 Jun 2026,11,7.6,21,-6.29,105.61,Simulasi Drift Data,,1
+2026-06-08 08:00:00,08 Jun 2026,12,7.9,15,-9.73,122.74,Simulasi Drift Data,,1
+2026-06-08 10:00:00,08 Jun 2026,4,6.8,13,-9.35,113.86,Simulasi Drift Data,,1
+2026-06-08 12:00:00,08 Jun 2026,9,6.6,25,-11.0,128.34,Simulasi Drift Data,,1
+2026-06-08 14:00:00,08 Jun 2026,23,7.4,11,2.0,105.92,Simulasi Drift Data,,1
+2026-06-08 16:00:00,08 Jun 2026,22,7.3,29,-8.69,139.58,Simulasi Drift Data,,1
+2026-06-08 18:00:00,08 Jun 2026,5,7.4,25,2.85,122.61,Simulasi Drift Data,,1
+2026-06-08 20:00:00,08 Jun 2026,23,7.4,24,-6.29,136.19,Simulasi Drift Data,,1
+2026-06-08 22:00:00,08 Jun 2026,10,7.4,11,-8.01,100.85,Simulasi Drift Data,,1
+2026-06-09 00:00:00,09 Jun 2026,5,6.4,7,-3.11,106.33,Simulasi Drift Data,,1
+2026-06-09 02:00:00,09 Jun 2026,0,6.2,12,1.54,116.98,Simulasi Drift Data,,1
+2026-06-09 04:00:00,09 Jun 2026,3,7.0,29,3.4,121.94,Simulasi Drift Data,,1
+2026-06-09 06:00:00,09 Jun 2026,7,7.9,6,-2.14,125.51,Simulasi Drift Data,,1
 2023-01-01 00:00:00,01 Jan 2023,6,5.5,33,-1.1,118.12,Indonesia (seed),,0
 2023-01-01 12:00:00,01 Jan 2023,19,2.1,53,-5.12,113.34,Indonesia (seed),,0
 2023-01-02 00:00:00,02 Jan 2023,14,5.2,177,-0.44,101.73,Indonesia (seed),,0
@@ -526,3 +599,30 @@ datetime,tanggal,jam,magnitude,kedalaman_km,lintang,bujur,wilayah,dirasakan,pote
 2023-09-06 12:00:00,06 Sep 2023,15,3.2,16,-0.69,131.27,Indonesia (seed),,0
 2023-09-07 00:00:00,07 Sep 2023,23,6.9,154,2.0,125.59,Indonesia (seed),,0
 2023-09-07 12:00:00,07 Sep 2023,15,3.1,149,-8.03,106.97,Indonesia (seed),,0
+2026-05-28T01:46:21+00:00,28 Mei 2026,8,5.1,10,-10.55,124.49,86 km Tenggara TIMORTENGAHSEL-NTT,,0
+2026-05-26T08:39:10+00:00,26 Mei 2026,15,5.1,10,-9.01,113.84,93 km Tenggara JEMBER-JATIM,,0
+2026-05-25T22:03:43+00:00,26 Mei 2026,5,5.1,10,-3.96,133.99,45 km Tenggara KAIMANA-PAPUABRT,,0
+2026-05-25T20:39:21+00:00,26 Mei 2026,3,5.7,22,1.06,126.19,125 km Tenggara BITUNG-SULUT,,0
+2026-05-25T10:23:58+00:00,25 Mei 2026,17,5.2,136,-7.55,128.64,115 km TimurLaut MALUKUBRTDAYA,,0
+2026-05-23T12:40:26+00:00,23 Mei 2026,19,5.3,17,-4.67,102.57,45 km BaratDaya BENGKULUSELATAN,,0
+2026-05-22T01:05:09+00:00,22 Mei 2026,8,5.8,26,1.07,126.18,124 km Tenggara BITUNG-SULUT,,0
+2026-05-20T23:12:56+00:00,21 Mei 2026,6,5.0,137,-6.06,130.47,231 km BaratLaut TANIMBAR,,0
+2026-05-20T10:28:50+00:00,20 Mei 2026,17,5.2,12,-8.09,119.21,65 km TimurLaut KOTA-BIMA-NTB,,0
+2026-05-14T17:53:15+00:00,15 Mei 2026,0,6.7,163,-6.09,130.56,224 km BaratLaut TANIMBAR,,0
+2026-05-12T08:54:00+00:00,12 Mei 2026,15,5.3,89,4.64,127.35,32 km Tenggara PULAUKARATUNG-SULUT,,0
+2026-05-05T06:44:50+00:00,05 Mei 2026,13,6.0,10,-10.11,119.3,37 km BaratDaya WANOKAKA-NTT,,0
+2026-05-05T02:38:50+00:00,05 Mei 2026,9,5.3,188,-6.41,130.23,210 km BaratLaut TANIMBAR,,0
+2026-05-02T10:27:11+00:00,02 Mei 2026,17,5.6,114,-5.64,130.92,201 km BaratLaut MALUKUTENGGARA,,0
+2026-05-01T18:52:47+00:00,02 Mei 2026,1,5.1,199,-7.52,128.53,107 km TimurLaut MALUKUBRTDAYA,,0
+2026-05-29T21:46:49+00:00,30 Mei 2026,4,3.2,4,-3.56,122.28,Pusat gempa berada di darat 19 km timur Konawe Utara,,0
+2026-05-29T15:37:35+00:00,29 Mei 2026,22,2.4,14,-6.87,108.46,Pusat gempa berada di darat 12 Km utara Kuningan,,0
+2026-05-29T14:50:23+00:00,29 Mei 2026,21,3.0,4,-5.33,104.62,Pusat gempa berada di darat 18 Km barat laut Tanggamus,,0
+2026-05-29T14:34:43+00:00,29 Mei 2026,21,4.6,4,-3.56,122.3,Pusat gempa berada di darat 22 km timur Konawe Utara,,0
+2026-05-29T06:25:21+00:00,29 Mei 2026,13,3.2,4,2.56,98.64,Pusat gempa berada di darat 10 km Barat Daya Samosir,,0
+2026-05-28T23:20:01+00:00,29 Mei 2026,6,3.2,10,-8.53,116.08,Pusat gempa berada di Darat 18 km utara Lombok Barat,,0
+2026-05-28T21:43:40+00:00,29 Mei 2026,4,3.1,13,-8.49,116.07,Pusat gempa berada di darat 18 km Barat Daya Lombok Utara,,0
+2026-05-28T20:59:10+00:00,29 Mei 2026,3,4.6,30,-8.37,109.03,Pusat gempa berada di laut 71 km tenggara Cilacap,,0
+2026-05-28T20:03:25+00:00,29 Mei 2026,3,3.7,11,-8.53,116.08,Pusat gempa berada di darat 18 km utara Lombok Barat,,0
+2026-05-26T19:49:05+00:00,27 Mei 2026,2,4.4,4,4.12,97.48,Pusat gempa berada di darat 20 km timur laut Gayolues,,0
+2026-05-26T09:30:12+00:00,26 Mei 2026,16,3.0,10,-3.22,129.01,Pusat gempa berada di darat 11 km Timur Laut Maluku Tengah,,0
+2026-05-24T15:33:11+00:00,24 Mei 2026,22,4.8,22,0.98,126.15,Pusat gempa berada di laut 125 km Tenggara Bitung,,0

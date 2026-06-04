@@ -28,8 +28,10 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest mlflow scikit-learn
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
-      - name: Ingest data from BMKG
+      - name: Ingest data dari BMKG
         run: python -m src.data.ingest_data
         env:
           PYTHONPATH: ${{ github.workspace }}
@@ -39,13 +41,24 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
 
-      - name: Run Training (before tests)
+      - name: Run Training
         run: python -m src.models.train
         env:
           PYTHONPATH: ${{ github.workspace }}
 
       - name: Run Tests
         run: pytest tests/ -v
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Check Model Performance
+        run: python scripts/check_model_performance.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        continue-on-error: true
+
+      - name: Compare and Promote Model
+        run: python scripts/compare_and_promote.py
         env:
           PYTHONPATH: ${{ github.workspace }}
 
