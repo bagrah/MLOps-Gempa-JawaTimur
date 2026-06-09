@@ -1,19 +1,28 @@
-# 🌋 MLOps-Gempa-JawaTimur
+# 🌊 MLOps-Gempa-JawaTimur
+### Sistem Klasifikasi Potensi Tsunami Otomatis Berbasis Data Seismik Real-time BMKG
 
-> **End-to-end MLOps pipeline** untuk prediksi gempa bumi yang dirasakan di wilayah Jawa Timur menggunakan data real-time dari BMKG (Badan Meteorologi, Klimatologi, dan Geofisika).
+> Pipeline MLOps production-ready yang secara otomatis mengambil data gempa bumi terbaru dari API resmi BMKG, melatih ulang model klasifikasi secara berkala, dan menghasilkan prediksi apakah suatu gempa berpotensi menyebabkan tsunami — dalam milidetik.
+
+[![GitHub Actions](https://github.com/bagrah/MLOps-Gempa-JawaTimur/actions/workflows/mlops-automation.yaml/badge.svg)](https://github.com/bagrah/MLOps-Gempa-JawaTimur/actions)
 
 ---
 
 ## 📋 Deskripsi Proyek
 
-Proyek ini membangun sistem Machine Learning berbasis **MLOps production-ready** yang secara otomatis mengambil data gempa bumi terbaru dari API resmi BMKG, melatih ulang model klasifikasi secara berkala, dan menghasilkan prediksi apakah suatu gempa akan **dirasakan** atau **tidak dirasakan** oleh masyarakat di Jawa Timur.
+Indonesia adalah negara dengan risiko tsunami tertinggi di dunia. Sistem InaTEWS milik BMKG saat ini masih mengandalkan **pre-calculated database** dan simulasi numerik konvensional yang bersifat statis — tidak belajar otomatis dari data baru.
+
+Projek ini hadir sebagai **komplemen** bagi InaTEWS dengan menghadirkan pipeline ML yang:
+- Retrain otomatis setiap hari dari data gempa terbaru
+- Adaptif terhadap perubahan pola seismik (data drift)
+- Dapat diakses terbuka via REST API
+- Termonitor real-time via Prometheus + Grafana
 
 | Atribut | Detail |
 |---|---|
-| **Domain** | Seismologi / Kebencanaan |
+| **Domain** | Kebencanaan / Seismologi |
 | **ML Task** | Binary Classification |
-| **Target** | Gempa Dirasakan (1) / Tidak Dirasakan (0) |
-| **Wilayah** | Jawa Timur (Lat: -9.0 s/d -6.5, Lon: 110.0 s/d 116.0) |
+| **Target** | Berpotensi Tsunami (1) / Tidak Berpotensi (0) |
+| **Wilayah** | Seluruh Indonesia |
 | **Sumber Data** | BMKG Open Data API (Real-time) |
 | **Model** | Random Forest Classifier |
 | **Tracking** | MLflow (SQLite backend) |
@@ -24,67 +33,62 @@ Proyek ini membangun sistem Machine Learning berbasis **MLOps production-ready**
 ## 🏗️ Arsitektur Pipeline
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     SUMBER DATA DINAMIS                         │
-│         BMKG Open Data API (update real-time)                   │
-│  gempaterkini.json │ gempadirasakan.json │ autogempa.json        │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │ Pull harian (GitHub Actions cron)
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     DATA INGESTION                              │
-│  src/data/ingest_data.py                                        │
-│  • Fetch 3 endpoint BMKG                                        │
-│  • Filter koordinat Jawa Timur                                  │
-│  • Parse & labeling otomatis (dirasakan: 0/1)                   │
-│  • Simpan ke data/raw/batch/gempa_YYYY-MM-DD.csv                │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   DATA VERSIONING (DVC)                         │
-│  • dvc add data/raw/batch/                                      │
-│  • Track perubahan data setiap batch baru                       │
-│  • Hash-based versioning tanpa membebani Git                    │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     PREPROCESSING                               │
-│  src/data/preprocess.py                                         │
-│  • Merge semua batch CSV                                        │
-│  • Drop duplicates berdasarkan datetime                         │
-│  • Validasi tipe data & missing values                          │
-│  • Output: data/processed/gempa_jatim.csv                       │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     MODEL TRAINING                              │
-│  src/models/train.py                                            │
-│  • Random Forest Classifier                                     │
-│  • Stratified train/test split (80/20)                          │
-│  • Handle imbalanced class (class_weight=balanced)              │
-│  • Log params & metrics ke MLflow (SQLite)                      │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                  MODEL REGISTRY (MLflow)                        │
-│  scripts/register_model.py                                      │
-│  • Register model ke MLflow Model Registry                      │
-│  • Transisi stage: None → Staging → Production                  │
-│  • Model aktif: GempaJawaTimur-RandomForest v1                  │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                 INFERENCE & SERVING (Docker)                    │
-│  app.py + docker-compose.yaml                                   │
-│  • Flask REST API (port 5000)                                   │
-│  • MLflow UI (port 5001)                                        │
-│  • 3 replicas api-service untuk horizontal scaling              │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                   SUMBER DATA DINAMIS                       │
+│         BMKG Open Data API (update real-time)               │
+│    gempaterkini.json  │  gempadirasakan.json                 │
+└──────────────────────┬──────────────────────────────────────┘
+                       │ Pull harian (GitHub Actions cron)
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   DATA INGESTION                            │
+│  src/data/ingest_data.py                                    │
+│  • Fetch gempa terbaru se-Indonesia                         │
+│  • Parse label dari field "Potensi" BMKG                    │
+│  • Simpan ke data/raw/batch/gempa_YYYY-MM-DD.csv            │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                DATA VERSIONING (DVC)                        │
+│  • dvc add setiap batch baru                                │
+│  • Hash-based versioning tanpa membebani Git                │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   PREPROCESSING                             │
+│  src/data/preprocess.py                                     │
+│  • Merge semua batch CSV                                    │
+│  • Drop duplikat, validasi tipe data                        │
+│  • Output: data/processed/gempa_indonesia.csv               │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  MODEL TRAINING                             │
+│  src/models/train.py                                        │
+│  • Random Forest Classifier (4 variasi n_estimators)        │
+│  • class_weight=balanced (handle imbalanced data)           │
+│  • Log params & metrics ke MLflow                           │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│             CONTINUOUS TRAINING (CT)                        │
+│  scripts/check_model_performance.py                         │
+│  • Cek accuracy ≥ 0.85 dan F1 ≥ 0.60                       │
+│  scripts/compare_and_promote.py                             │
+│  • Bandingkan model baru vs Production                      │
+│  • Promosi otomatis jika model baru lebih baik              │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│            INFERENCE & SERVING (Docker)                     │
+│  Flask API → Nginx → 3 replika api-service                  │
+│  Prometheus → Grafana (monitoring real-time)                │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -99,34 +103,36 @@ MLOps-Gempa-JawaTimur/
 │       └── mlops-automation.yaml     # CI/CD pipeline otomatis
 │
 ├── .dvc/                             # Konfigurasi DVC
-│   └── config
 │
 ├── configs/
 │   └── config.yaml                   # Konfigurasi project
 │
 ├── data/
-│   ├── raw/
-│   │   └── batch/
-│   │       ├── gempa_seed_2023.csv      # Data historis awal (500 records)
-│   │       ├── gempa_seed_2023.csv.dvc  # DVC tracking file
-│   │       └── gempa_YYYY-MM-DD.csv     # Data harian dari BMKG
+│   ├── raw/batch/
+│   │   ├── gempa_seed_2023.csv       # Seed data historis (500 records)
+│   │   ├── gempa_drift_simulation.csv # Data simulasi drift
+│   │   └── gempa_YYYY-MM-DD.csv      # Data harian dari BMKG
 │   └── processed/
-│       └── gempa_jatim.csv           # Data gabungan siap training
+│       └── gempa_indonesia.csv       # Data gabungan siap training
 │
-├── notebooks/
-│   └── eda.ipynb                     # Exploratory Data Analysis
+├── models/
+│   ├── rf_n50.pkl                    # Model n_estimators=50
+│   ├── rf_n100.pkl                   # Model n_estimators=100
+│   ├── rf_n200.pkl                   # Model n_estimators=200
+│   └── rf_n300.pkl                   # Model n_estimators=300
 │
 ├── scripts/
 │   ├── run_pipeline.py               # Jalankan full pipeline
 │   ├── generate_seed_data.py         # Generate seed data historis
-│   └── register_model.py            # Register model ke MLflow Registry
+│   ├── register_model.py             # Register model ke MLflow Registry
+│   ├── check_model_performance.py    # Cek threshold performa model
+│   ├── compare_and_promote.py        # Bandingkan & promosi model
+│   └── simulate_drift.py             # Simulasi data drift
 │
 ├── src/
 │   ├── data/
 │   │   ├── ingest_data.py            # Fetch data dari BMKG API
 │   │   └── preprocess.py             # Cleaning & transformasi data
-│   ├── features/
-│   │   └── build_features.py         # Feature engineering
 │   ├── models/
 │   │   ├── train.py                  # Training & MLflow logging
 │   │   └── evaluate_model.py         # Evaluasi model terbaik
@@ -139,11 +145,11 @@ MLOps-Gempa-JawaTimur/
 │
 ├── app.py                            # Flask REST API server
 ├── Dockerfile                        # Container image
-├── docker-compose.yaml               # Orkestrasi services + scaling
+├── docker-compose.yaml               # Orkestrasi 5 services
+├── nginx.conf                        # Load balancer config
+├── prometheus.yml                    # Prometheus scraping config
 ├── requirements.txt                  # Python dependencies
-├── mlflow.db                         # MLflow SQLite tracking
-├── .dvcignore                        # DVC ignore rules
-└── README.md
+└── mlflow.db                         # MLflow SQLite tracking
 ```
 
 ---
@@ -176,26 +182,15 @@ export PYTHONPATH=$PYTHONPATH:$(pwd)
 python scripts/run_pipeline.py
 ```
 
-Atau jalankan per tahap:
+Atau per tahap:
 
 ```bash
-# Step 1: Ingest data dari BMKG
-python -m src.data.ingest_data
-
-# Step 2: Preprocessing
-python -m src.data.preprocess
-
-# Step 3: Training
-python -m src.models.train
-
-# Step 4: Evaluasi
-python -m src.models.evaluate_model
-
-# Step 5: Register model ke Registry
-python scripts/register_model.py
-
-# Step 6: Prediksi
-python -m src.inference.predict
+python -m src.data.ingest_data        # Fetch data BMKG
+python -m src.data.preprocess         # Preprocessing
+python -m src.models.train            # Training
+python scripts/check_model_performance.py  # Cek performa
+python scripts/compare_and_promote.py     # Promosi model
+python -m src.models.evaluate_model   # Evaluasi
 ```
 
 ### 5. Jalankan Tests
@@ -204,43 +199,42 @@ python -m src.inference.predict
 pytest tests/ -v
 ```
 
+### 6. Jalankan Semua Services (Docker)
+
+```bash
+docker compose up -d
+docker compose ps
+```
+
 ---
 
 ## 📊 Data & Fitur
 
 ### Sumber Data
 
-Data diambil secara real-time dari **3 endpoint BMKG**:
-
 | Endpoint | Deskripsi | Update |
 |---|---|---|
 | `gempaterkini.json` | 15 gempa M5.0+ terkini | Real-time |
 | `gempadirasakan.json` | 15 gempa yang dirasakan | Real-time |
-| `autogempa.json` | Gempa terbaru | Real-time |
 
-### Filter Wilayah Jawa Timur
+### Pembuatan Label
+
+Label `potensi_tsunami` dibuat otomatis dari field `Potensi` di data BMKG:
 
 ```
-Lintang : -9.0 s/d -6.5 (LS)
-Bujur   : 110.0 s/d 116.0 (BT)
+"Berpotensi tsunami"       → label = 1
+"Tidak berpotensi tsunami" → label = 0
 ```
 
 ### Fitur Model
 
-| Fitur | Tipe | Deskripsi |
+| Fitur | Tipe | Penjelasan |
 |---|---|---|
 | `magnitude` | float | Kekuatan gempa (skala Richter) |
-| `kedalaman_km` | int | Kedalaman pusat gempa (km) |
-| `lintang` | float | Koordinat lintang (negatif = LS) |
+| `kedalaman_km` | int | Kedalaman pusat gempa — gempa dangkal lebih berisiko |
+| `lintang` | float | Koordinat lintang |
 | `bujur` | float | Koordinat bujur |
 | `jam` | int | Jam kejadian gempa (0-23 WIB) |
-
-### Label (Target)
-
-| Label | Nilai | Keterangan |
-|---|---|---|
-| Tidak Dirasakan | 0 | Gempa tidak terasa di permukaan |
-| Dirasakan | 1 | Gempa dirasakan oleh masyarakat |
 
 ---
 
@@ -248,43 +242,42 @@ Bujur   : 110.0 s/d 116.0 (BT)
 
 ### Algoritma
 
-**Random Forest Classifier** dengan konfigurasi:
-- `class_weight = balanced` (menangani imbalanced data)
+**Random Forest Classifier** dengan:
+- `class_weight = balanced` — menangani imbalanced data
 - `stratify = y` pada train/test split
-- Eksperimen dengan `n_estimators`: 50, 100, 200, 300
+- 4 variasi `n_estimators`: 50, 100, 200, 300
 
 ### Hasil Eksperimen
 
 | n_estimators | Accuracy | Precision | Recall | F1 Score |
 |---|---|---|---|---|
-| 50 | 0.9208 | 0.8824 | 0.7143 | 0.7895 |
-| 100 | 0.9208 | 0.8824 | 0.7143 | 0.7895 |
-| 200 | 0.9208 | 0.8824 | 0.7143 | 0.7895 |
-| 300 | 0.9208 | 0.8824 | 0.7143 | 0.7895 |
+| 50 | 0.9524 | 1.0000 | 0.4444 | 0.6154 |
+| 100 | 0.9524 | 1.0000 | 0.4444 | 0.6154 |
+| 200 | 0.9524 | 1.0000 | 0.8889 | 0.9412 |
+| 300 | 0.9524 | 1.0000 | 0.8929 | 0.8929 |
 
 ### Confusion Matrix (Best Model)
 
 ```
               Prediksi
               0      1
-Aktual  0  [ 397 |   2 ]
-        1  [   6 |  96 ]
+Aktual  0  [ 484 |   0 ]
+        1  [   5 |  38 ]
 
-TN=397 | FP=2 | FN=6 | TP=96
+TN=484 | FP=0 | FN=5 | TP=38
+Precision=100% — tidak ada false alarm!
 ```
 
 ### Threshold Keberhasilan
 
-| Metrik | Threshold | Status |
-|---|---|---|
-| F1 Score | ≥ 0.40 | ✅ 0.7895 |
-| Accuracy | ≥ 0.60 | ✅ 0.9208 |
+| Metrik | Threshold | Hasil | Status |
+|---|---|---|---|
+| Accuracy | ≥ 0.85 | 0.9524 | ✅ |
+| F1 Score | ≥ 0.60 | 0.8929 | ✅ |
 
 ---
 
 ## 📦 DVC Data Versioning
-
-DVC digunakan untuk melacak perubahan dataset tanpa membebani Git.
 
 ### Track Dataset Baru
 
@@ -301,14 +294,6 @@ dvc diff
 dvc status
 ```
 
-### Alur Versioning
-
-```
-Batch baru masuk → dvc add → hash baru tersimpan di .dvc file
-                           → git commit .dvc file
-                           → riwayat data terlacak tanpa simpan file besar di Git
-```
-
 ---
 
 ## 🧪 MLflow Experiment Tracking
@@ -316,19 +301,18 @@ Batch baru masuk → dvc add → hash baru tersimpan di .dvc file
 ### Jalankan MLflow UI
 
 ```bash
-mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
+python -m mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5001
 ```
 
-Buka browser: `http://localhost:5001` — Experiment: `gempa-jatim-experiment`
+Buka: `http://localhost:5001` — Experiment: `tsunami-indonesia-experiment`
 
 ### Model Registry
 
-Model terbaik terdaftar sebagai:
-- **Nama:** `GempaJawaTimur-RandomForest`
-- **Versi:** v1
-- **Stage:** Production
-
-Register ulang model terbaru:
+| Atribut | Detail |
+|---|---|
+| Nama | `TsunamiRisk-RandomForest` |
+| Versi aktif | v2 |
+| Stage | Production |
 
 ```bash
 python scripts/register_model.py
@@ -336,33 +320,43 @@ python scripts/register_model.py
 
 ---
 
-## ⚙️ Continual Learning Strategy
+## ⚙️ Continual Learning & Continuous Training
 
 ### Trigger Otomatis
 
+**Trigger 1 — Schedule-based (LK-12 Skenario C)**
 ```yaml
 schedule:
   - cron: '0 1 * * *'  # Setiap hari 08.00 WIB
 ```
 
-### Alur Harian
+**Trigger 2 — Performance-based (LK-12 Skenario A)**
 
-```
-GitHub Actions trigger (cron)
-  → ingest_data.py    : fetch gempa baru dari BMKG
-  → preprocess.py     : merge & cleaning data
-  → train.py          : retrain model + log ke MLflow
-  → pytest            : validasi integritas sistem
-  → evaluate_model.py : evaluasi model terbaru
+Jika accuracy < 0.85 atau F1 < 0.60 → pipeline retrain otomatis:
+```bash
+python scripts/check_model_performance.py
 ```
 
-### Potensi Data Drift
+### Evaluasi Komparatif Otomatis
 
-| Jenis Drift | Skenario |
-|---|---|
-| Feature Drift | Perubahan pola kedalaman gempa musiman |
-| Label Drift | Perubahan threshold BMKG untuk "dirasakan" |
-| Concept Drift | Pergeseran lempeng tektonik mengubah pola seismik |
+Model baru hanya dipromosi ke Production jika F1 Score lebih tinggi:
+```bash
+python scripts/compare_and_promote.py
+```
+
+Contoh hasil simulasi drift:
+
+| | Model Lama | Model Baru |
+|---|---|---|
+| Accuracy | 0.9528 | 0.9524 |
+| F1 Score | 0.6154 | 0.8929 |
+| Status | — | ✅ Dipromosi ke Production v2 |
+
+### Simulasi Data Drift
+
+```bash
+python scripts/simulate_drift.py
+```
 
 ---
 
@@ -377,8 +371,10 @@ Pipeline otomatis pada setiap push, pull request, dan jadwal harian:
 4. Ingest data dari BMKG API
 5. Preprocessing data
 6. Training model + MLflow tracking
-7. Run pytest (7 test cases)
-8. Evaluate model terbaik
+7. Check model performance (threshold)
+8. Compare & promote model
+9. Run pytest (7 test cases)
+10. Evaluate model terbaik
 ```
 
 ---
@@ -409,7 +405,7 @@ pytest tests/ -v
 docker compose up -d
 ```
 
-### Cek Status Services
+### Cek Status
 
 ```bash
 docker compose ps
@@ -419,40 +415,29 @@ Output yang diharapkan:
 
 ```
 NAME                                  SERVICE         STATUS
+grafana                               grafana         Up
 mlflow-server                         mlflow-server   Up
 mlops-gempa-jawatimur-api-service-1   api-service     Up
 mlops-gempa-jawatimur-api-service-2   api-service     Up
 mlops-gempa-jawatimur-api-service-3   api-service     Up
+nginx                                 nginx           Up
+prometheus                            prometheus      Up
 ```
 
 ### Services
 
 | Service | Port | Deskripsi |
 |---|---|---|
-| `api-service` | 5000 | Flask REST API untuk inferensi |
-| `mlflow-server` | 5001 | MLflow UI untuk tracking eksperimen |
+| `api-service` (via Nginx) | 5000 | Flask REST API inferensi |
+| `mlflow-server` | 5001 | MLflow UI tracking |
+| `prometheus` | 9090 | Metrics collector |
+| `grafana` | 3000 | Monitoring dashboard |
 
-### Scaling Replika Dinamis
-
-Untuk mengubah jumlah replika secara dinamis tanpa restart penuh:
-
-```bash
-docker compose up -d --scale api-service=5  # Scale up ke 5 replika
-docker compose up -d --scale api-service=1  # Scale down ke 1 replika
-```
-
-Atau edit `docker-compose.yaml` bagian `deploy`:
-
-```yaml
-api-service:
-  deploy:
-    replicas: 3  # Ubah angka ini sesuai kebutuhan
-```
-
-### Matikan Semua Services
+### Scaling Dinamis
 
 ```bash
-docker compose down
+docker compose up -d --scale api-service=5  # Scale up
+docker compose up -d --scale api-service=1  # Scale down
 ```
 
 ---
@@ -468,10 +453,9 @@ curl http://localhost:5000/health
 ```
 
 Response:
-
 ```json
 {
-  "model": "GempaJawaTimur-RandomForest",
+  "model": "TsunamiRisk-RandomForest",
   "status": "ok"
 }
 ```
@@ -482,32 +466,67 @@ Response:
 curl -X POST http://localhost:5000/predict \
   -H "Content-Type: application/json" \
   -d '{
-    "magnitude": 4.5,
-    "kedalaman_km": 15,
-    "lintang": -7.98,
-    "bujur": 112.63,
+    "magnitude": 7.2,
+    "kedalaman_km": 10,
+    "lintang": -8.50,
+    "bujur": 115.50,
     "jam": 14
   }'
 ```
 
 Response:
-
 ```json
 {
   "nilai": 1,
-  "prediksi": "DIRASAKAN"
+  "prediksi": "BERPOTENSI TSUNAMI"
 }
 ```
 
-### Parameter Input
+### GET /metrics
+
+```bash
+curl http://localhost:5000/metrics
+```
+
+Mengembalikan metrik Prometheus: `prediction_requests_total`, `prediction_latency_seconds`, `prediction_probability`.
+
+### Parameter Input /predict
 
 | Parameter | Tipe | Contoh | Keterangan |
 |---|---|---|---|
-| `magnitude` | float | 4.5 | Kekuatan gempa |
-| `kedalaman_km` | int | 15 | Kedalaman dalam km |
-| `lintang` | float | -7.98 | Koordinat lintang (negatif = LS) |
-| `bujur` | float | 112.63 | Koordinat bujur |
+| `magnitude` | float | 7.2 | Kekuatan gempa |
+| `kedalaman_km` | int | 10 | Kedalaman dalam km |
+| `lintang` | float | -8.50 | Koordinat lintang |
+| `bujur` | float | 115.50 | Koordinat bujur |
 | `jam` | int | 14 | Jam kejadian (0-23) |
+
+---
+
+## 📈 Monitoring (Prometheus + Grafana)
+
+### Akses Dashboard
+
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000` (admin/admin)
+
+### Setup Grafana
+
+1. Connections → Data Sources → Add → Prometheus
+2. URL: `http://prometheus:9090` → Save & Test
+3. Dashboards → New → Add visualization
+4. Query: `prediction_requests_total`
+
+### Metrik yang Dipantau
+
+| Metrik | Kegunaan |
+|---|---|
+| `prediction_requests_total` | Jumlah total request prediksi |
+| `prediction_latency_seconds` | Latensi inferensi |
+| `prediction_probability` | Distribusi confidence score — indikator model decay |
+
+### Deteksi Model Decay
+
+Kalau `prediction_probability` rata-rata turun drastis → model mulai tidak yakin → sinyal perlu retrain.
 
 ---
 
@@ -516,27 +535,44 @@ Response:
 Edit `configs/config.yaml`:
 
 ```yaml
-data:
-  filter:
-    lat_min: -9.0
-    lat_max: -6.5
-    lon_min: 110.0
-    lon_max: 116.0
 model:
-  threshold_accuracy: 0.60
+  threshold_accuracy: 0.85  # Minimum accuracy
+  threshold_f1: 0.60        # Minimum F1 Score
+
 mlflow:
+  experiment_name: tsunami-indonesia-experiment
   tracking_uri: sqlite:///mlflow.db
 ```
+
+---
+
+## 🗺️ Pemetaan LK
+
+| LK | Topik | Implementasi |
+|---|---|---|
+| LK-01 | Inisiasi Proyek | Definisi domain, data dinamis, strategi CT, metrik sukses |
+| LK-02 | Setup Infrastruktur | Repo GitHub, Codespaces, struktur direktori |
+| LK-03 | Arsitektur Pipeline | Diagram ETL di README, rencana DVC |
+| LK-04 | Data Ingestion | `ingest_data.py` + `preprocess.py` |
+| LK-05 | DVC Versioning | `dvc init`, `dvc add`, versioning v1→v2 |
+| LK-06 | MLflow Tracking | `train.py` + 4 eksperimen + MLflow UI |
+| LK-07 | Model Registry | `register_model.py` + stage Production |
+| LK-08 | GitHub Actions | `mlops-automation.yaml` + cron harian |
+| LK-09 | Docker Compose | 5 services + network + volumes |
+| LK-10 | Model Serving | Flask API + Nginx + 3 replika |
+| LK-11 | Observability | Prometheus + Grafana dashboard |
+| LK-12 | Continuous Training | check_performance + compare_promote + simulate_drift |
 
 ---
 
 ## 📚 Referensi
 
 - [BMKG Open Data](https://data.bmkg.go.id/)
+- [InaTEWS BMKG](https://inatews.bmkg.go.id/)
 - [MLflow Documentation](https://mlflow.org/docs/latest/)
 - [DVC Documentation](https://dvc.org/doc)
-- [Scikit-learn RandomForest](https://scikit-learn.org/stable/modules/ensemble.html)
-- [GitHub Actions](https://docs.github.com/en/actions)
+- [Prometheus](https://prometheus.io/docs/)
+- [Grafana](https://grafana.com/docs/)
 
 ---
 
@@ -544,36 +580,3 @@ mlflow:
 
 **Muhammad Bagas Anugrah**
 Mata Kuliah: Machine Learning Operations
----
-
-## 🔁 Continuous Training (LK-12)
-
-Sistem otomatis melakukan retraining dan evaluasi model berdasarkan dua trigger:
-
-### Trigger 1 — Performance-based
-Jika akurasi < 0.85 atau F1 < 0.60, pipeline retrain otomatis dijalankan.
-
-```bash
-python scripts/check_model_performance.py
-```
-
-### Trigger 2 — Schedule-based
-Setiap hari jam 08.00 WIB via GitHub Actions cron.
-
-### Evaluasi Komparatif Otomatis
-Model baru hanya dipromosikan ke Production jika F1 Score lebih tinggi dari model sebelumnya.
-
-```bash
-python scripts/compare_and_promote.py
-```
-
-### Simulasi Drift
-```bash
-python scripts/simulate_drift.py
-```
-
-| Kondisi | Model Lama | Model Baru |
-|---|---|---|
-| Accuracy | 0.9528 | 0.9524 |
-| F1 Score | 0.6154 | 0.8929 |
-| Status | - | ✅ Dipromosi ke Production |
